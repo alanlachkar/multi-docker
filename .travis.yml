@@ -1,0 +1,34 @@
+language: generic
+
+# Specify docker as dependency
+service:
+  - docker
+
+# Build test version of React project
+before_install:
+  - docker build -t alanlachkar/react-test -f ./client/Dockerfile.dev ./client
+  # If other projects have to be tested, we need to create build here like reat-test project
+
+# Run tests
+script:
+  - docker run -e CI=true alanlachkar/react-test npm test
+  # If other projects have to be tested, we need to run our test here like react-test project
+
+# Build production versions of all projects
+after_success:
+  # Don't need to specify the Dockerfile because it will used the default Dockerfile (without .dev)
+  - docker build -t alanlachkar/mutli-client ./client
+  - docker build -t alanlachkar/mutli-nginx ./nginx
+  - docker build -t alanlachkar/mutli-server ./server
+  - docker build -t alanlachkar/mutli-worker ./worker
+  # Login in to the docker CLI
+  ## "echo" will retireve the DOCKER_PASSWORD environment variables
+  ## And pass it to the next command "docker login" that awaits it as input data
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to docker hub
+  - docker push alanlachkar/mutli-client
+  - docker push alanlachkar/mutli-nginx
+  - docker push alanlachkar/mutli-server
+  - docker push alanlachkar/mutli-worker
+# Tell Elastic Beanstalk
+
