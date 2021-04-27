@@ -17,9 +17,9 @@ function App() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Learn React and Fib Calculator
+            Learn React
           </a>
-          <Link to="/">Home</Link>
+          <Link to="/">Fib Calculator Page</Link>
           <Link to="/otherpage">Other Page</Link>
         </header>
         <div>
