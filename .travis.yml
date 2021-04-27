@@ -30,5 +30,20 @@ after_success:
   - docker push alanlachkar/mutli-nginx
   - docker push alanlachkar/mutli-server
   - docker push alanlachkar/mutli-worker
-# Tell Elastic Beanstalk
 
+# Tell Elastic Beanstalk
+deploy:
+  # Travis prepare the work by knowing the provider
+  provider: elasticbeanstalk
+  region: "eu-west-3"
+  app: "multi-docker"
+  env: "Multidocker-env"
+  # This can be found by searching for the S3 service of AWS
+  bucket_name: "elasticbeanstalk-eu-west-3-401320705593"
+  bucket_path: "docker-multi"
+  # We want to deploy each times something go to the master branch
+  on:
+    branch: master
+  # We specify the access keys imported on the site of travis-ci
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
